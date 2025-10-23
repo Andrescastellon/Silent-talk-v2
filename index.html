@@ -19,64 +19,40 @@
     --shadow: 0 6px 18px rgba(12,18,31,0.06);
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
-
   html,body { height:100%; margin:0; background:linear-gradient(180deg,#f5f7fb 0%, #eef5fa 100%); color:#07123b; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-  .app {
-    max-width:980px;
-    margin:18px auto;
-    padding:18px;
-  }
-
+  .app { max-width:980px; margin:18px auto; padding:18px; }
   header { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:12px; }
   .title { display:flex; gap:12px; align-items:center; }
-  .logo {
-    width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow: 0 6px 18px rgba(3,105,161,0.14);
-    display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:20px;
-  }
+  .logo { width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow: 0 6px 18px rgba(3,105,161,0.14); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:20px; }
   h1 { margin:0; font-size:18px; letter-spacing:-0.2px; }
   p.lead { margin:0; color:var(--muted); font-size:13px; }
-
-  .grid {
-    display:grid;
-    grid-template-columns: 1fr 380px;
-    gap:16px;
-  }
-
-  /* Left panel: camera */
+  .grid { display:grid; grid-template-columns: 1fr 380px; gap:16px; }
   .card { background:var(--card); border-radius:var(--radius); padding:var(--pad); box-shadow:var(--shadow); }
   .camera-wrap { position:relative; overflow:hidden; border-radius:12px; background:#000; display:flex; align-items:center; justify-content:center; min-height:300px; }
   video#video { width:100%; height:auto; display:block; object-fit:cover; }
   canvas#overlay { position:absolute; left:0; top:0; pointer-events:none; }
-
   .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center; }
   select, input[type=number] { border-radius:10px; border:1px solid #e6eef8; padding:10px 12px; background:var(--glass); font-size:14px; color:#07203a; }
   button { background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border:0; padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:600; box-shadow: 0 6px 16px rgba(3,105,161,0.12); }
   button.ghost { background:transparent; color:var(--accent-2); border:1px solid #d6ecf1; box-shadow:none; }
   .muted { color:var(--muted); font-size:13px; }
-
-  /* Right panel: info + preview */
   .side { display:flex; flex-direction:column; gap:12px; }
   .status { padding:12px; border-radius:10px; background:linear-gradient(180deg,#fff, #fbfdff); border:1px solid #eef6fb; font-size:14px; }
   .counts { font-family:monospace; font-size:13px; color:#0b2b3b; overflow:auto; max-height:120px; padding-right:6px; }
   .preview-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
   .thumb { width:64px; height:64px; border-radius:8px; object-fit:cover; border:1px solid #e9f2f7; box-shadow:0 6px 14px rgba(11,22,35,0.04); }
-
   footer.note { margin-top:12px; color:var(--muted); font-size:13px; }
-
-  /* Responsive */
-  @media (max-width:920px){
-    .grid{ grid-template-columns: 1fr; }
-    .side { order:2 }
-    .camera-wrap { min-height:280px; }
-  }
-
-  /* small helpers */
+  @media (max-width:920px){ .grid{ grid-template-columns: 1fr; } .side { order:2 } .camera-wrap { min-height:280px; } }
   .small { font-size:13px; color:var(--muted); }
   .row { display:flex; gap:8px; align-items:center; }
-  .danger { color:#b91c1c; font-weight:700; }
+  .modal-back { position:fixed; inset:0; background:rgba(8,12,20,0.45); display:flex; align-items:center; justify-content:center; z-index:1200; }
+  .modal { width:92%; max-width:720px; background:#fff; border-radius:12px; padding:18px; box-shadow:0 18px 40px rgba(3,16,32,0.18); }
+  .modal h3 { margin:0 0 8px 0; }
+  .tile-list { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .tile { width:84px; height:84px; border-radius:8px; background:#f6fbff; display:flex; align-items:center; justify-content:center; font-weight:700; color:#083344; box-shadow:inset 0 -6px 12px rgba(3,105,161,0.02); }
 </style>
 
-<!-- load scripts -->
+<!-- librerías -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -99,11 +75,11 @@
     </header>
 
     <div class="grid">
-      <!-- LEFT: Camera & Actions -->
+      <!-- LEFT -->
       <div>
         <div class="card">
           <div class="camera-wrap" aria-hidden="false">
-            <video id="video" autoplay playsinline></video>
+            <video id="video" autoplay playsinline muted></video>
             <canvas id="overlay"></canvas>
           </div>
 
@@ -114,14 +90,14 @@
             <label class="small">Mín muestras</label>
             <input id="minSamples" type="number" value="20" min="1" style="width:86px" />
 
-            <button id="captureSample" title="Capturar muestra">Capturar</button>
-            <button id="trainBtn" title="Entrenar modelo">Entrenar</button>
-            <button id="predictBtn" title="Predecir frame">Probar</button>
-            <button id="realtimeToggle" class="ghost" title="Modo continuo">Real-time</button>
+            <button id="captureSample" title="Capturar muestra" disabled>Capturar</button>
+            <button id="trainBtn" title="Entrenar modelo" disabled>Entrenar</button>
+            <button id="predictBtn" title="Predecir frame" disabled>Probar</button>
+            <button id="realtimeToggle" class="ghost" title="Modo continuo" disabled>Real-time</button>
           </div>
 
           <div class="row" style="margin-top:10px; gap:10px;">
-            <button id="saveModelBtn" class="ghost">Guardar</button>
+            <button id="saveModelBtn" class="ghost" disabled>Guardar</button>
             <button id="loadModelBtn" class="ghost">Cargar</button>
             <button id="exportDataBtn" class="ghost">Exportar</button>
             <button id="importDataBtn" class="ghost">Importar</button>
@@ -130,20 +106,19 @@
           </div>
 
           <div style="margin-top:12px;" class="small muted">
-            <span id="log">Inicializando cámara…</span>
+            <span id="log">Abre el tutorial y pulsa "Comenzar" para activar la cámara.</span>
             <div id="progress" style="margin-top:6px;"></div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: Status & Preview -->
+      <!-- RIGHT -->
       <aside class="side">
         <div class="status card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div><strong>Conteos por clase</strong></div>
             <div class="small muted">Selecciona letra para ver miniaturas</div>
           </div>
-
           <div class="counts" id="counts" aria-live="polite" style="margin-top:8px;">--</div>
 
           <div style="margin-top:8px;">
@@ -156,7 +131,7 @@
           <div><strong>Consejos rápidos</strong></div>
           <ol style="margin-top:8px; color:var(--muted); font-size:13px; padding-left:16px;">
             <li>Mantén la mano dentro del encuadre.</li>
-            <li>Usa fondo claro y buena iluminación.</li>
+            <li>Usa fondo simple y buena iluminación.</li>
             <li>Captura variaciones (ángulos / distancia).</li>
             <li>Si usas dos manos, mantenlas separadas y visibles.</li>
           </ol>
@@ -166,19 +141,46 @@
           <div><strong>Estado:</strong> <span id="statusText">Listo</span></div>
           <div style="margin-top:8px"><strong>Predicción:</strong> <span id="predText">—</span></div>
         </div>
-
       </aside>
     </div>
 
     <footer class="note">
-      <div class="small muted">Instrucciones: selecciona la letra, presiona <strong>Capturar</strong> varias veces (recomendado ≥20). Luego <strong>Entrenar</strong>. Guarda el modelo si quieres usarlo luego.</div>
+      <div class="small muted">Instrucciones: abre el tutorial, pulsa <strong>Comenzar</strong>, selecciona la letra y presiona <strong>Capturar</strong> varias veces. Luego pulsa <strong>Entrenar</strong>.</div>
     </footer>
   </div>
 
-<script>
-/* ------------------ LÓGICA JS (MediaPipe + TFJS) ------------------ */
+  <!-- Tutorial modal (se abre al entrar) -->
+  <div id="tutorialModal" class="modal-back" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <h3>Guía rápida — Cómo capturar buenas muestras</h3>
+      <p class="small muted">Sigue estos pasos breves antes de comenzar. Pulsa <strong>Comenzar</strong> cuando estés listo.</p>
 
-/* UI elements */
+      <div style="margin-top:12px;">
+        <div class="tile-list">
+          <div class="tile">A–Z</div>
+          <div class="tile">Ambas manos</div>
+          <div class="tile">Fotos estáticas</div>
+          <div class="tile">≥ 20 por clase</div>
+        </div>
+
+        <ol style="margin-top:12px; color:var(--muted); font-size:13px; padding-left:18px;">
+          <li>Coloca el teléfono estable (apoyado o en trípode)</li>
+          <li>Usa un fondo simple y buena iluminación</li>
+          <li>Coloca la mano al centro del encuadre y toma varias muestras con pequeños cambios de ángulo</li>
+          <li>Si usas ambas manos, mantenlas separadas y visibles</li>
+        </ol>
+
+        <div style="display:flex; gap:8px; margin-top:14px; justify-content:flex-end;">
+          <button id="btnComenzar">Comenzar</button>
+          <button id="btnCerrar" class="ghost">Cerrar (activar cámara igualmente)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+/* ------------------ Código principal (module) ------------------ */
+/* Variables UI */
 const letters = Array.from(Array(26)).map((_,i)=>String.fromCharCode(65+i));
 const selectLetter = document.getElementById('letter');
 letters.forEach(l => selectLetter.appendChild(Object.assign(document.createElement('option'), { value: l, text: l })));
@@ -191,7 +193,6 @@ const captureBtn = document.getElementById('captureSample');
 const trainBtn = document.getElementById('trainBtn');
 const predictBtn = document.getElementById('predictBtn');
 const realtimeBtn = document.getElementById('realtimeToggle');
-
 const saveBtn = document.getElementById('saveModelBtn');
 const loadBtn = document.getElementById('loadModelBtn');
 const exportBtn = document.getElementById('exportDataBtn');
@@ -207,7 +208,11 @@ const statusText = document.getElementById('statusText');
 const predText = document.getElementById('predText');
 const minSamplesInput = document.getElementById('minSamples');
 
-let samples = {}; // { 'A': [ { vec: Float32Array(126), thumb: dataUrl }, ... ], ... }
+const tutorialModal = document.getElementById('tutorialModal');
+const btnComenzar = document.getElementById('btnComenzar');
+const btnCerrar = document.getElementById('btnCerrar');
+
+let samples = {}; // { 'A': [ { vec: Float32Array(126), thumb: dataUrl }, ... ] }
 letters.forEach(l => samples[l] = []);
 let model = null;
 const HAND_POINTS = 21;
@@ -217,16 +222,17 @@ const INPUT_DIM = HAND_DIM * MAX_HANDS; // 126
 const BATCH_SIZE = 32;
 const EPOCHS = 30;
 
-function setLog(t) { logEl.innerText = t; }
-function setStatus(t) { statusText.innerText = t; }
-function setPred(t) { predText.innerText = t; }
+function setLog(t){ logEl.innerText = t; console.log('[LSC]', t); }
+function setStatus(t){ statusText.innerText = t; }
+function setPred(t){ predText.innerText = t; }
 
 function updateCounts(){
   countsEl.innerText = letters.map(l => `${l}:${samples[l].length}`).join('  •  ');
 }
 updateCounts();
 
-/* ------------------ MediaPipe Hands ------------------ */
+/* ------------------ MediaPipe Hands init ------------------ */
+/* Hands class is provided by mediapipe script included earlier. Use Camera util from mediapipe as well. */
 const hands = new Hands({
   locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
 });
@@ -238,21 +244,27 @@ hands.setOptions({
 });
 hands.onResults(onHandsResults);
 
-let camera;
+let cameraInstance = null;
+
+/* startCamera(): called when user clicks "Comenzar" (or close tutorial) */
 async function startCamera(){
   try {
-    camera = new Camera(video, {
-      onFrame: async () => { await hands.send({image: video}); },
+    // If already created, skip
+    if (cameraInstance && cameraInstance.video === video) return;
+    cameraInstance = new Camera(video, {
+      onFrame: async () => { await hands.send({ image: video }); },
       width: 640,
       height: 480
     });
-    await camera.start();
-    setLog('Cámara lista — muestra una mano para detectar');
-  } catch(e){
-    setLog('Error al acceder a la cámara: ' + (e.message || e));
+    await cameraInstance.start();
+    setLog('Cámara lista — muéstrame tu mano');
+    enableControlsAfterCamera();
+  } catch (e){
+    console.error(e);
+    setLog('Error al iniciar la cámara: ' + (e && e.message ? e.message : e));
+    alert('No se pudo activar la cámara. Revisa permisos del navegador.');
   }
 }
-startCamera();
 
 /* draw overlay */
 function drawLandmarks(multi){
@@ -271,11 +283,9 @@ function drawLandmarks(multi){
   }
 }
 
-/* normalize both-hands into Float32Array(126) */
+/* normalize two-hand landmarks into Float32Array(126) */
 function normalizeMultiLandmarks(multi){
-  // multi: array of hands; each hand: 21 {x,y,z}
-  if (!multi) return null;
-  // sort by wrist x (left->right) to have stable order
+  if (!multi || multi.length === 0) return null;
   const arr = multi.slice().sort((a,b)=> (a[0].x - b[0].x));
   const combined = [];
   for (let h=0; h<MAX_HANDS; h++){
@@ -284,17 +294,16 @@ function normalizeMultiLandmarks(multi){
       for (let i=0;i<HAND_DIM;i++) combined.push(0);
     } else {
       const base = hand[0];
-      const temp = [];
+      const tmp = [];
       for (let i=0;i<HAND_POINTS;i++){
-        temp.push(hand[i].x - base.x);
-        temp.push(hand[i].y - base.y);
-        temp.push(hand[i].z - base.z);
+        tmp.push(hand[i].x - base.x);
+        tmp.push(hand[i].y - base.y);
+        tmp.push(hand[i].z - base.z);
       }
-      // scale normalize
       let maxAbs = 0;
-      for (const v of temp) if (Math.abs(v) > maxAbs) maxAbs = Math.abs(v);
+      for (const v of tmp) if (Math.abs(v) > maxAbs) maxAbs = Math.abs(v);
       if (maxAbs === 0) maxAbs = 1e-6;
-      for (const v of temp) combined.push(v / maxAbs);
+      for (const v of tmp) combined.push(v / maxAbs);
     }
   }
   return Float32Array.from(combined);
@@ -308,12 +317,22 @@ function onHandsResults(results){
   lastVector = v;
 }
 
+/* ------------------ UI: enable controls once camera active ------------------ */
+function enableControlsAfterCamera(){
+  captureBtn.disabled = false;
+  trainBtn.disabled = false;
+  predictBtn.disabled = false;
+  realtimeBtn.disabled = false;
+  saveBtn.disabled = false;
+  // export/import/clear remain enabled
+}
+
 /* ------------------ Capture sample (vector + thumb) ------------------ */
 captureBtn.addEventListener('click', async () => {
   const label = selectLetter.value;
-  if (!lastVector) { setLog('No se detectó mano(s). Asegúrate de que estén visibles.'); return; }
+  if (!lastVector){ setLog('No se detectó mano(s) en el frame actual.'); return; }
 
-  // thumbnail: draw video center-crop to small canvas
+  // thumbnail
   const tmp = document.createElement('canvas');
   const w = Math.min(160, video.videoWidth || 640);
   const h = Math.min(160, video.videoHeight || 480);
@@ -360,10 +379,10 @@ importBtn.addEventListener('click', ()=> importFile.click());
 importFile.addEventListener('change', (ev) => {
   const f = ev.target.files[0];
   if (!f) return;
-  const r = new FileReader();
-  r.onload = () => {
+  const reader = new FileReader();
+  reader.onload = () => {
     try {
-      const obj = JSON.parse(r.result);
+      const obj = JSON.parse(reader.result);
       if (!obj.samples) { setLog('Archivo inválido.'); return; }
       for (const k of Object.keys(obj.samples)) {
         if (!samples[k]) samples[k] = [];
@@ -371,9 +390,9 @@ importFile.addEventListener('change', (ev) => {
       }
       updateCounts(); renderPreviewFor(selectLetter.value);
       setLog('Muestras importadas.');
-    } catch(e) { setLog('Error importando archivo.'); }
+    } catch(e){ setLog('Error importando: ' + e); }
   };
-  r.readAsText(f);
+  reader.readAsText(f);
 });
 
 clearBtn.addEventListener('click', () => {
@@ -462,7 +481,6 @@ predictBtn.addEventListener('click', async () => {
 
 let realtime = false;
 let rtInterval = null;
-
 function lastVectorAvailable(){ return (typeof lastVector !== 'undefined' && lastVector && lastVector.length === INPUT_DIM); }
 
 realtimeBtn.addEventListener('click', async () => {
@@ -512,27 +530,23 @@ function speak(text){
   window.speechSynthesis.speak(u);
 }
 
-/* ------------------ cleanup ------------------ */
+/* ------------------ Tutorial modal handlers ------------------ */
+btnComenzar.addEventListener('click', async () => {
+  tutorialModal.style.display = 'none';
+  await startCamera();
+});
+btnCerrar.addEventListener('click', async () => {
+  tutorialModal.style.display = 'none';
+  await startCamera();
+});
+
+/* ------------------ helpers & cleanup ------------------ */
 window.addEventListener('beforeunload', () => { if (rtInterval) clearInterval(rtInterval); });
 
-/* expose lastVector to prediction code */
+/* expose lastVector for predict code */
 let lastVector = null;
-function updateLastVector(vec){ lastVector = vec; }
-function getLastVector(){ return lastVector; }
 
-/* Hook: onHandsResults update lastVector */
-(function patchOnHands(){
-  const orig = onHandsResults;
-  window.onHandsResults = function(results){ orig(results); updateLastVector(normalizeMultiLandmarks(results.multiHandLandmarks || [])); };
-})();
-
-/* But our hands.onResults already calls onHandsResults, so we also set lastVector in that callback */
-function onHandsResults(results){
-  const multi = results.multiHandLandmarks || [];
-  drawLandmarks(multi);
-  const v = normalizeMultiLandmarks(multi);
-  lastVector = v;
-}
+/* onHandsResults already sets lastVector inside its implementation */
 </script>
 </body>
 </html>
