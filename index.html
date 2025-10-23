@@ -3,56 +3,46 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Traductor LSC — Minimal</title>
+<title>Traductor LSC — Debug / Toasts</title>
 
-<!-- Minimal elegante CSS interno -->
 <style>
   :root{
-    --bg:#f5f7fb;
-    --card:#ffffff;
-    --muted:#64748b;
-    --accent:#0ea5a0;
-    --accent-2:#0369a1;
-    --glass: rgba(255,255,255,0.6);
-    --radius:14px;
-    --pad:12px;
-    --shadow: 0 6px 18px rgba(12,18,31,0.06);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --bg:#f5f7fb; --card:#ffffff; --muted:#64748b; --accent:#0ea5a0; --accent-2:#0369a1;
+    --glass: rgba(255,255,255,0.6); --radius:12px; --pad:12px; --shadow: 0 6px 18px rgba(12,18,31,0.06);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   }
-  html,body { height:100%; margin:0; background:linear-gradient(180deg,#f5f7fb 0%, #eef5fa 100%); color:#07123b; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-  .app { max-width:980px; margin:18px auto; padding:18px; }
-  header { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:12px; }
-  .title { display:flex; gap:12px; align-items:center; }
-  .logo { width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow: 0 6px 18px rgba(3,105,161,0.14); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:20px; }
-  h1 { margin:0; font-size:18px; letter-spacing:-0.2px; }
-  p.lead { margin:0; color:var(--muted); font-size:13px; }
-  .grid { display:grid; grid-template-columns: 1fr 380px; gap:16px; }
-  .card { background:var(--card); border-radius:var(--radius); padding:var(--pad); box-shadow:var(--shadow); }
-  .camera-wrap { position:relative; overflow:hidden; border-radius:12px; background:#000; display:flex; align-items:center; justify-content:center; min-height:300px; }
-  video#video { width:100%; height:auto; display:block; object-fit:cover; }
-  canvas#overlay { position:absolute; left:0; top:0; pointer-events:none; }
-  .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center; }
-  select, input[type=number] { border-radius:10px; border:1px solid #e6eef8; padding:10px 12px; background:var(--glass); font-size:14px; color:#07203a; }
-  button { background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border:0; padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:600; box-shadow: 0 6px 16px rgba(3,105,161,0.12); }
-  button.ghost { background:transparent; color:var(--accent-2); border:1px solid #d6ecf1; box-shadow:none; }
-  .muted { color:var(--muted); font-size:13px; }
-  .side { display:flex; flex-direction:column; gap:12px; }
-  .status { padding:12px; border-radius:10px; background:linear-gradient(180deg,#fff, #fbfdff); border:1px solid #eef6fb; font-size:14px; }
-  .counts { font-family:monospace; font-size:13px; color:#0b2b3b; overflow:auto; max-height:120px; padding-right:6px; }
-  .preview-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-  .thumb { width:64px; height:64px; border-radius:8px; object-fit:cover; border:1px solid #e9f2f7; box-shadow:0 6px 14px rgba(11,22,35,0.04); }
-  footer.note { margin-top:12px; color:var(--muted); font-size:13px; }
-  @media (max-width:920px){ .grid{ grid-template-columns: 1fr; } .side { order:2 } .camera-wrap { min-height:280px; } }
-  .small { font-size:13px; color:var(--muted); }
-  .row { display:flex; gap:8px; align-items:center; }
-  .modal-back { position:fixed; inset:0; background:rgba(8,12,20,0.45); display:flex; align-items:center; justify-content:center; z-index:1200; }
-  .modal { width:92%; max-width:720px; background:#fff; border-radius:12px; padding:18px; box-shadow:0 18px 40px rgba(3,16,32,0.18); }
-  .modal h3 { margin:0 0 8px 0; }
-  .tile-list { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
-  .tile { width:84px; height:84px; border-radius:8px; background:#f6fbff; display:flex; align-items:center; justify-content:center; font-weight:700; color:#083344; box-shadow:inset 0 -6px 12px rgba(3,105,161,0.02); }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#f5f7fb 0%, #eef5fa 100%);color:#07123b}
+  .app{max-width:980px;margin:18px auto;padding:16px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+  h1{margin:0;font-size:18px}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+  .grid{display:grid;grid-template-columns:1fr 380px;gap:16px}
+  .card{background:var(--card);border-radius:var(--radius);padding:var(--pad);box-shadow:var(--shadow)}
+  .camera-wrap{position:relative;overflow:hidden;border-radius:10px;background:#000;min-height:300px;display:flex;align-items:center;justify-content:center}
+  video#video{width:100%;height:auto;object-fit:cover}
+  canvas#overlay{position:absolute;left:0;top:0;pointer-events:none}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  select,input[type=number]{border-radius:10px;border:1px solid #e6eef8;padding:9px;background:var(--glass);font-size:14px}
+  button{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#fff;border:0;padding:9px 12px;border-radius:10px;cursor:pointer;font-weight:600;box-shadow:0 6px 16px rgba(3,105,161,0.12)}
+  button.ghost{background:transparent;color:var(--accent-2);border:1px solid #d6ecf1;box-shadow:none}
+  .muted{color:var(--muted);font-size:13px}
+  .counts{font-family:monospace;font-size:13px;color:#0b2b3b;overflow:auto;max-height:120px}
+  .preview-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .thumb{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid #e9f2f7}
+  footer.note{margin-top:12px;color:var(--muted);font-size:13px}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}.camera-wrap{min-height:260px}}
+  .modal-back{position:fixed;inset:0;background:rgba(8,12,20,0.45);display:flex;align-items:center;justify-content:center;z-index:1200}
+  .modal{width:92%;max-width:720px;background:#fff;border-radius:12px;padding:18px;box-shadow:0 18px 40px rgba(3,16,32,0.18)}
+  .tile{width:84px;height:84px;border-radius:8px;background:#f6fbff;display:flex;align-items:center;justify-content:center;font-weight:700;color:#083344}
+  /* toast */
+  #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:1300;pointer-events:none}
+  .toast-item{background:rgba(6,30,37,0.95);color:#fff;padding:10px 14px;border-radius:10px;margin-top:8px;box-shadow:0 6px 18px rgba(3,16,32,0.2);opacity:0;transform:translateY(8px);transition:all .28s ease;pointer-events:auto}
+  .toast-item.show{opacity:1;transform:translateY(0)}
+  .debug-badge{position:fixed;right:18px;top:18px;background:#0ea5a0;color:white;padding:8px 10px;border-radius:10px;box-shadow:0 6px 18px rgba(3,16,32,0.18);z-index:1400;font-weight:700}
 </style>
 
-<!-- librerías -->
+<!-- libs -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -61,21 +51,18 @@
 <body>
   <div class="app">
     <header>
-      <div class="title">
+      <div style="display:flex;gap:12px;align-items:center">
         <div class="logo">LS</div>
         <div>
           <h1>Traductor LSC — alfabeto</h1>
-          <p class="lead">Entrena y prueba directamente desde tu celular — modo foto (landmarks)</p>
+          <p class="lead">Entrena y prueba desde tu móvil — modo foto (landmarks)</p>
         </div>
       </div>
-
-      <div class="row">
-        <div class="small">Minimal • Entrenamiento en navegador</div>
-      </div>
+      <div class="muted">Debug activo • HTTPS requerido</div>
     </header>
 
     <div class="grid">
-      <!-- LEFT -->
+      <!-- left -->
       <div>
         <div class="card">
           <div class="camera-wrap" aria-hidden="false">
@@ -83,20 +70,18 @@
             <canvas id="overlay"></canvas>
           </div>
 
-          <div class="controls" style="margin-top:14px;">
-            <label for="letter" class="small">Clase</label>
-            <select id="letter" aria-label="Seleccionar letra"></select>
-
-            <label class="small">Mín muestras</label>
+          <div class="controls">
+            <label class="muted">Clase</label>
+            <select id="letter"></select>
+            <label class="muted">Mín muestras</label>
             <input id="minSamples" type="number" value="20" min="1" style="width:86px" />
-
-            <button id="captureSample" title="Capturar muestra" disabled>Capturar</button>
-            <button id="trainBtn" title="Entrenar modelo" disabled>Entrenar</button>
-            <button id="predictBtn" title="Predecir frame" disabled>Probar</button>
-            <button id="realtimeToggle" class="ghost" title="Modo continuo" disabled>Real-time</button>
+            <button id="captureSample" disabled>Capturar</button>
+            <button id="trainBtn" disabled>Entrenar</button>
+            <button id="predictBtn" disabled>Probar</button>
+            <button id="realtimeToggle" class="ghost" disabled>Real-time</button>
           </div>
 
-          <div class="row" style="margin-top:10px; gap:10px;">
+          <div style="display:flex;gap:10px;margin-top:10px">
             <button id="saveModelBtn" class="ghost" disabled>Guardar</button>
             <button id="loadModelBtn" class="ghost">Cargar</button>
             <button id="exportDataBtn" class="ghost">Exportar</button>
@@ -105,34 +90,34 @@
             <input type="file" id="importFile" style="display:none" accept="application/json" />
           </div>
 
-          <div style="margin-top:12px;" class="small muted">
+          <div style="margin-top:12px" class="muted">
             <span id="log">Abre el tutorial y pulsa "Comenzar" para activar la cámara.</span>
-            <div id="progress" style="margin-top:6px;"></div>
+            <div id="progress" style="margin-top:6px"></div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT -->
+      <!-- right -->
       <aside class="side">
-        <div class="status card">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="card status">
+          <div style="display:flex;justify-content:space-between;align-items:center">
             <div><strong>Conteos por clase</strong></div>
-            <div class="small muted">Selecciona letra para ver miniaturas</div>
+            <div class="muted">Selecciona letra para ver miniaturas</div>
           </div>
-          <div class="counts" id="counts" aria-live="polite" style="margin-top:8px;">--</div>
+          <div id="counts" class="counts" style="margin-top:8px">--</div>
 
-          <div style="margin-top:8px;">
+          <div style="margin-top:8px">
             <strong>Preview</strong>
-            <div class="preview-grid" id="preview"></div>
+            <div id="preview" class="preview-grid"></div>
           </div>
         </div>
 
-        <div class="status card">
+        <div class="card status">
           <div><strong>Consejos rápidos</strong></div>
-          <ol style="margin-top:8px; color:var(--muted); font-size:13px; padding-left:16px;">
+          <ol style="margin-top:8px;color:var(--muted);font-size:13px;padding-left:16px">
             <li>Mantén la mano dentro del encuadre.</li>
             <li>Usa fondo simple y buena iluminación.</li>
-            <li>Captura variaciones (ángulos / distancia).</li>
+            <li>Captura variaciones (ángulos/distancia).</li>
             <li>Si usas dos manos, mantenlas separadas y visibles.</li>
           </ol>
         </div>
@@ -145,32 +130,32 @@
     </div>
 
     <footer class="note">
-      <div class="small muted">Instrucciones: abre el tutorial, pulsa <strong>Comenzar</strong>, selecciona la letra y presiona <strong>Capturar</strong> varias veces. Luego pulsa <strong>Entrenar</strong>.</div>
+      <div class="muted">Tutorial integrado: pulsa "Comenzar" en el modal inicial para activar la cámara y ver instrucciones.</div>
     </footer>
   </div>
 
-  <!-- Tutorial modal (se abre al entrar) -->
+  <!-- tutorial modal -->
   <div id="tutorialModal" class="modal-back" role="dialog" aria-modal="true">
-    <div class="modal" role="document">
+    <div class="modal">
       <h3>Guía rápida — Cómo capturar buenas muestras</h3>
-      <p class="small muted">Sigue estos pasos breves antes de comenzar. Pulsa <strong>Comenzar</strong> cuando estés listo.</p>
+      <p class="muted">Pulsa <strong>Comenzar</strong> cuando estés listo. El permiso de cámara aparecerá en Chrome.</p>
 
-      <div style="margin-top:12px;">
-        <div class="tile-list">
+      <div style="margin-top:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
           <div class="tile">A–Z</div>
           <div class="tile">Ambas manos</div>
           <div class="tile">Fotos estáticas</div>
           <div class="tile">≥ 20 por clase</div>
         </div>
 
-        <ol style="margin-top:12px; color:var(--muted); font-size:13px; padding-left:18px;">
-          <li>Coloca el teléfono estable (apoyado o en trípode)</li>
-          <li>Usa un fondo simple y buena iluminación</li>
-          <li>Coloca la mano al centro del encuadre y toma varias muestras con pequeños cambios de ángulo</li>
-          <li>Si usas ambas manos, mantenlas separadas y visibles</li>
+        <ol style="margin-top:12px;color:var(--muted);font-size:13px;padding-left:18px">
+          <li>Apoya el teléfono o sostén estable.</li>
+          <li>Buena iluminación y fondo simple.</li>
+          <li>Coloca la mano en el centro y toma variaciones.</li>
+          <li>Evita ropa o fondos que oculten la mano.</li>
         </ol>
 
-        <div style="display:flex; gap:8px; margin-top:14px; justify-content:flex-end;">
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
           <button id="btnComenzar">Comenzar</button>
           <button id="btnCerrar" class="ghost">Cerrar (activar cámara igualmente)</button>
         </div>
@@ -178,9 +163,13 @@
     </div>
   </div>
 
+  <!-- toast container + debug badge -->
+  <div id="toast"></div>
+  <div id="debugBadge" class="debug-badge" style="display:none">JS iniciado ✔</div>
+
 <script type="module">
-/* ------------------ Código principal (module) ------------------ */
-/* Variables UI */
+/* ============= MÓDULO PRINCIPAL ============= */
+/* UI refs */
 const letters = Array.from(Array(26)).map((_,i)=>String.fromCharCode(65+i));
 const selectLetter = document.getElementById('letter');
 letters.forEach(l => selectLetter.appendChild(Object.assign(document.createElement('option'), { value: l, text: l })));
@@ -211,16 +200,36 @@ const minSamplesInput = document.getElementById('minSamples');
 const tutorialModal = document.getElementById('tutorialModal');
 const btnComenzar = document.getElementById('btnComenzar');
 const btnCerrar = document.getElementById('btnCerrar');
+const toastRoot = document.getElementById('toast');
+const debugBadge = document.getElementById('debugBadge');
 
-let samples = {}; // { 'A': [ { vec: Float32Array(126), thumb: dataUrl }, ... ] }
-letters.forEach(l => samples[l] = []);
+/* data */
+let samples = {}; letters.forEach(l => samples[l]=[]);
 let model = null;
-const HAND_POINTS = 21;
-const HAND_DIM = HAND_POINTS * 3;
-const MAX_HANDS = 2;
-const INPUT_DIM = HAND_DIM * MAX_HANDS; // 126
-const BATCH_SIZE = 32;
-const EPOCHS = 30;
+const HAND_POINTS = 21, HAND_DIM = HAND_POINTS*3, MAX_HANDS = 2, INPUT_DIM = HAND_DIM*MAX_HANDS;
+const BATCH_SIZE = 32, EPOCHS = 30;
+
+/* tiny toast helper */
+function showToast(text, ms=1600){
+  const item = document.createElement('div'); item.className='toast-item'; item.innerText = text;
+  toastRoot.appendChild(item);
+  // show after a tick
+  requestAnimationFrame(()=> item.classList.add('show'));
+  // remove after ms
+  setTimeout(()=> {
+    item.classList.remove('show');
+    setTimeout(()=> item.remove(), 300);
+  }, ms);
+}
+
+/* initial debug show */
+debugBadge.style.display = 'none';
+function jsStarted(){
+  debugBadge.style.display = 'block';
+  showToast('JavaScript iniciado ✔', 2000);
+  console.log('[LSC] JavaScript iniciado ✔');
+}
+jsStarted(); // confirm script runs
 
 function setLog(t){ logEl.innerText = t; console.log('[LSC]', t); }
 function setStatus(t){ statusText.innerText = t; }
@@ -231,42 +240,30 @@ function updateCounts(){
 }
 updateCounts();
 
-/* ------------------ MediaPipe Hands init ------------------ */
-/* Hands class is provided by mediapipe script included earlier. Use Camera util from mediapipe as well. */
-const hands = new Hands({
-  locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-});
-hands.setOptions({
-  maxNumHands: 2,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.6,
-  minTrackingConfidence: 0.6
-});
+/* ===== MediaPipe Hands ===== */
+const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 hands.onResults(onHandsResults);
-
 let cameraInstance = null;
 
-/* startCamera(): called when user clicks "Comenzar" (or close tutorial) */
 async function startCamera(){
   try {
-    // If already created, skip
     if (cameraInstance && cameraInstance.video === video) return;
     cameraInstance = new Camera(video, {
       onFrame: async () => { await hands.send({ image: video }); },
-      width: 640,
-      height: 480
+      width: 640, height: 480
     });
     await cameraInstance.start();
     setLog('Cámara lista — muéstrame tu mano');
     enableControlsAfterCamera();
-  } catch (e){
+    showToast('Cámara activada', 1500);
+  } catch (e) {
     console.error(e);
     setLog('Error al iniciar la cámara: ' + (e && e.message ? e.message : e));
     alert('No se pudo activar la cámara. Revisa permisos del navegador.');
   }
 }
 
-/* draw overlay */
 function drawLandmarks(multi){
   overlay.width = video.videoWidth || 640;
   overlay.height = video.videoHeight || 480;
@@ -296,12 +293,9 @@ function normalizeMultiLandmarks(multi){
       const base = hand[0];
       const tmp = [];
       for (let i=0;i<HAND_POINTS;i++){
-        tmp.push(hand[i].x - base.x);
-        tmp.push(hand[i].y - base.y);
-        tmp.push(hand[i].z - base.z);
+        tmp.push(hand[i].x - base.x); tmp.push(hand[i].y - base.y); tmp.push(hand[i].z - base.z);
       }
-      let maxAbs = 0;
-      for (const v of tmp) if (Math.abs(v) > maxAbs) maxAbs = Math.abs(v);
+      let maxAbs = 0; for (const v of tmp) if (Math.abs(v) > maxAbs) maxAbs = Math.abs(v);
       if (maxAbs === 0) maxAbs = 1e-6;
       for (const v of tmp) combined.push(v / maxAbs);
     }
@@ -317,92 +311,74 @@ function onHandsResults(results){
   lastVector = v;
 }
 
-/* ------------------ UI: enable controls once camera active ------------------ */
+/* enable controls after camera start */
 function enableControlsAfterCamera(){
-  captureBtn.disabled = false;
-  trainBtn.disabled = false;
-  predictBtn.disabled = false;
-  realtimeBtn.disabled = false;
-  saveBtn.disabled = false;
-  // export/import/clear remain enabled
+  captureBtn.disabled = false; trainBtn.disabled = false; predictBtn.disabled = false;
+  realtimeBtn.disabled = false; saveBtn.disabled = false;
 }
 
-/* ------------------ Capture sample (vector + thumb) ------------------ */
-captureBtn.addEventListener('click', async () => {
+/* ===== UI interactions with debug toasts ===== */
+function touchConfirm(actionName){
+  showToast(actionName, 900);
+  console.log('[LSC] boton:', actionName);
+}
+
+/* Capture sample */
+captureBtn.addEventListener('click', () => {
+  touchConfirm('Capturar (tocado)');
   const label = selectLetter.value;
   if (!lastVector){ setLog('No se detectó mano(s) en el frame actual.'); return; }
-
-  // thumbnail
   const tmp = document.createElement('canvas');
-  const w = Math.min(160, video.videoWidth || 640);
-  const h = Math.min(160, video.videoHeight || 480);
-  tmp.width = w; tmp.height = h;
-  const tctx = tmp.getContext('2d');
-  const sx = Math.max(0, (video.videoWidth - w)/2 || 0);
-  const sy = Math.max(0, (video.videoHeight - h)/2 || 0);
+  const w = Math.min(160, video.videoWidth || 640), h = Math.min(160, video.videoHeight || 480);
+  tmp.width = w; tmp.height = h; const tctx = tmp.getContext('2d');
+  const sx = Math.max(0, (video.videoWidth - w)/2 || 0), sy = Math.max(0, (video.videoHeight - h)/2 || 0);
   tctx.drawImage(video, sx, sy, w, h, 0, 0, w, h);
   const dataURL = tmp.toDataURL('image/jpeg', 0.75);
-
   samples[label].push({ vec: Float32Array.from(lastVector), thumb: dataURL });
-  updateCounts();
-  renderPreviewFor(label);
+  updateCounts(); renderPreviewFor(label);
   setLog(`Muestra guardada para ${label} · total ${samples[label].length}`);
 });
 
-/* preview */
-selectLetter.addEventListener('change', ()=> renderPreviewFor(selectLetter.value));
+/* preview rendering */
+selectLetter.addEventListener('change', ()=> { touchConfirm('Cambiar clase'); renderPreviewFor(selectLetter.value); });
 function renderPreviewFor(letter){
   previewEl.innerHTML = '';
   const arr = samples[letter] || [];
   for (let i=0;i<arr.length;i++){
-    const img = document.createElement('img');
-    img.src = arr[i].thumb;
-    img.className = 'thumb';
+    const img = document.createElement('img'); img.src = arr[i].thumb; img.className = 'thumb';
     previewEl.appendChild(img);
   }
 }
 
-/* ------------------ Export / Import / Clear ------------------ */
+/* export/import/clear */
 exportBtn.addEventListener('click', () => {
+  touchConfirm('Exportar muestras');
   const payload = { samples: {} };
-  for (const k of Object.keys(samples)){
-    payload.samples[k] = samples[k].map(s => ({ vec: Array.from(s.vec), thumb: s.thumb }));
-  }
+  for (const k of Object.keys(samples)) payload.samples[k] = samples[k].map(s => ({ vec: Array.from(s.vec), thumb: s.thumb }));
   const blob = new Blob([JSON.stringify(payload)], { type:'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'lsc_samples.json'; a.click();
-  URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='lsc_samples.json'; a.click(); URL.revokeObjectURL(url);
   setLog('Muestras exportadas (descarga iniciada).');
 });
 
-importBtn.addEventListener('click', ()=> importFile.click());
-importFile.addEventListener('change', (ev) => {
-  const f = ev.target.files[0];
-  if (!f) return;
+importBtn.addEventListener('click', ()=> { touchConfirm('Importar'); importFile.click(); });
+importFile.addEventListener('change', (ev)=> {
+  const f = ev.target.files[0]; if (!f) return;
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = ()=> {
     try {
-      const obj = JSON.parse(reader.result);
-      if (!obj.samples) { setLog('Archivo inválido.'); return; }
-      for (const k of Object.keys(obj.samples)) {
-        if (!samples[k]) samples[k] = [];
-        for (const s of obj.samples[k]) samples[k].push({ vec: Float32Array.from(s.vec), thumb: s.thumb || '' });
-      }
-      updateCounts(); renderPreviewFor(selectLetter.value);
-      setLog('Muestras importadas.');
+      const obj = JSON.parse(reader.result); if (!obj.samples) { setLog('Archivo inválido.'); return; }
+      for (const k of Object.keys(obj.samples)) { if (!samples[k]) samples[k]=[]; for (const s of obj.samples[k]) samples[k].push({ vec: Float32Array.from(s.vec), thumb: s.thumb || '' }); }
+      updateCounts(); renderPreviewFor(selectLetter.value); setLog('Muestras importadas.');
     } catch(e){ setLog('Error importando: ' + e); }
-  };
-  reader.readAsText(f);
+  }; reader.readAsText(f);
 });
 
-clearBtn.addEventListener('click', () => {
-  if (!confirm('Borrar todas las muestras de la sesión?')) return;
-  letters.forEach(l => samples[l] = []);
-  updateCounts(); renderPreviewFor(selectLetter.value);
-  setLog('Muestras borradas.');
+clearBtn.addEventListener('click', ()=> {
+  touchConfirm('Borrar todas'); if(!confirm('Borrar todas las muestras de la sesión?')) return;
+  letters.forEach(l=>samples[l]=[]); updateCounts(); renderPreviewFor(selectLetter.value); setLog('Muestras borradas.');
 });
 
-/* ------------------ Build & Train model ------------------ */
+/* ===== Training ===== */
 function buildModel(numClasses){
   const m = tf.sequential();
   m.add(tf.layers.dense({ inputShape: [INPUT_DIM], units: 256, activation:'relu' }));
@@ -415,138 +391,82 @@ function buildModel(numClasses){
 }
 
 function prepareDataset(){
-  const xs = []; const ys = [];
+  const xs=[], ys=[];
   for (let i=0;i<letters.length;i++){
     const arr = samples[letters[i]];
     for (let j=0;j<arr.length;j++){
-      xs.push(Array.from(arr[j].vec));
-      const oneHot = new Array(letters.length).fill(0); oneHot[i] = 1;
-      ys.push(oneHot);
+      xs.push(Array.from(arr[j].vec)); const oneHot = new Array(letters.length).fill(0); oneHot[i]=1; ys.push(oneHot);
     }
   }
-  if (xs.length === 0) return null;
-  const xTensor = tf.tensor2d(xs);
-  const yTensor = tf.tensor2d(ys);
-  return { x: xTensor, y: yTensor };
+  if (xs.length===0) return null;
+  const xTensor = tf.tensor2d(xs); const yTensor = tf.tensor2d(ys);
+  return { x:xTensor, y:yTensor };
 }
 
 trainBtn.addEventListener('click', async () => {
+  touchConfirm('Entrenar');
   const MIN = Math.max(1, parseInt(minSamplesInput.value || '20'));
   const lacking = letters.filter(l => samples[l].length < MIN);
-  if (lacking.length > 0){
-    setLog(`No entrenado: faltan muestras (mín ${MIN}) para: ${lacking.slice(0,6).join(', ')}${lacking.length>6? ', ...':''}`);
-    setStatus('Muestras insuficientes');
-    return;
-  }
-  const ds = prepareDataset();
-  if (!ds) { setLog('No hay datos.'); return; }
-  model = buildModel(letters.length);
-  setLog('Entrenando en el navegador — esto puede tardar según tu teléfono...');
-  setStatus('Entrenando');
+  if (lacking.length > 0){ setLog(`No entrenado: faltan muestras (mín ${MIN}) para: ${lacking.slice(0,6).join(', ')}${lacking.length>6? ', ...':''}`); setStatus('Muestras insuficientes'); return; }
+  const ds = prepareDataset(); if (!ds) { setLog('No hay datos.'); return; }
+  model = buildModel(letters.length); setLog('Entrenando en el navegador — esto puede tardar...'); setStatus('Entrenando');
   progressEl.innerText = '';
   await model.fit(ds.x, ds.y, {
     epochs: EPOCHS,
     batchSize: Math.min(BATCH_SIZE, Math.max(8, Math.floor(ds.x.shape[0]/4))),
     validationSplit: 0.12,
-    callbacks: {
-      onEpochEnd: async (epoch, logs) => {
-        progressEl.innerText = `Epoch ${epoch+1}/${EPOCHS} — loss:${logs.loss.toFixed(3)} val_loss:${(logs.val_loss||0).toFixed(3)} acc:${(logs.acc||0).toFixed(3)}`;
-        await tf.nextFrame();
-      }
-    }
+    callbacks: { onEpochEnd: async (epoch, logs) => { progressEl.innerText = `Epoch ${epoch+1}/${EPOCHS} — loss:${logs.loss.toFixed(3)} val_loss:${(logs.val_loss||0).toFixed(3)} acc:${(logs.acc||0).toFixed(3)}`; await tf.nextFrame(); } }
   });
-  ds.x.dispose(); ds.y.dispose();
-  setLog('Entrenamiento finalizado. Guarda el modelo si quieres conservarlo.');
-  setStatus('Entrenado');
-  updateCounts();
+  ds.x.dispose(); ds.y.dispose(); setLog('Entrenamiento finalizado.'); setStatus('Entrenado'); updateCounts();
 });
 
-/* ------------------ Predict & Real-time ------------------ */
+/* ===== Predict & real-time ===== */
 predictBtn.addEventListener('click', async () => {
+  touchConfirm('Probar');
   if (!lastVectorAvailable()) { setLog('No hay landmarks en el frame actual.'); return; }
-  if (!model) {
-    try { model = await tf.loadLayersModel('indexeddb://lsc-landmarks-model'); setLog('Modelo cargado desde IndexedDB.'); }
-    catch(e) { setLog('No hay modelo cargado. Entrena o carga uno primero.'); return; }
-  }
-  const input = tf.tensor2d([Array.from(lastVector)]);
-  const preds = model.predict(input);
-  const data = await preds.data();
-  const idx = data.indexOf(Math.max(...data));
-  const p = letters[idx];
+  if (!model) { try { model = await tf.loadLayersModel('indexeddb://lsc-landmarks-model'); setLog('Modelo cargado desde IndexedDB.'); } catch(e) { setLog('No hay modelo cargado. Entrena o carga uno primero.'); return; } }
+  const input = tf.tensor2d([Array.from(lastVector)]); const preds = model.predict(input); const data = await preds.data();
+  const idx = data.indexOf(Math.max(...data)); const p = letters[idx];
   setLog(`Predicción: ${p} · conf: ${(data[idx]*100).toFixed(1)}%`);
-  setPred(`${p} (${(data[idx]*100).toFixed(1)}%)`);
-  speak(p);
-  input.dispose(); preds.dispose();
+  setPred(`${p} (${(data[idx]*100).toFixed(1)}%)`); speak(p); input.dispose(); preds.dispose();
 });
 
-let realtime = false;
-let rtInterval = null;
+let realtime=false, rtInterval=null;
 function lastVectorAvailable(){ return (typeof lastVector !== 'undefined' && lastVector && lastVector.length === INPUT_DIM); }
 
 realtimeBtn.addEventListener('click', async () => {
-  realtime = !realtime;
-  realtimeBtn.innerText = realtime ? 'Detener real-time' : 'Real-time';
-  realtimeBtn.classList.toggle('ghost');
+  touchConfirm('Real-time toggled');
+  realtime = !realtime; realtimeBtn.innerText = realtime ? 'Detener real-time' : 'Real-time'; realtimeBtn.classList.toggle('ghost');
   if (realtime){
-    if (!model){
-      try { model = await tf.loadLayersModel('indexeddb://lsc-landmarks-model'); setLog('Modelo cargado desde storage para real-time'); }
-      catch(e){ setLog('No hay modelo en storage — entrena antes'); realtime=false; realtimeBtn.innerText = 'Real-time'; realtimeBtn.classList.toggle('ghost'); return; }
-    }
+    if (!model) { try { model = await tf.loadLayersModel('indexeddb://lsc-landmarks-model'); setLog('Modelo cargado desde storage para real-time'); } catch(e) { setLog('No hay modelo en storage — entrena antes'); realtime=false; realtimeBtn.innerText='Real-time'; realtimeBtn.classList.toggle('ghost'); return; } }
     rtInterval = setInterval(async () => {
       if (!lastVectorAvailable() || !model) return;
-      const input = tf.tensor2d([Array.from(lastVector)]);
-      const preds = model.predict(input);
-      const data = await preds.data();
-      const idx = data.indexOf(Math.max(...data));
-      const p = letters[idx];
-      setLog(`Real-time → ${p} ${(data[idx]*100).toFixed(1)}%`);
-      setPred(`${p} ${(data[idx]*100).toFixed(1)}%`);
+      const input = tf.tensor2d([Array.from(lastVector)]); const preds = model.predict(input); const data = await preds.data();
+      const idx = data.indexOf(Math.max(...data)); const p = letters[idx];
+      setLog(`Real-time → ${p} ${(data[idx]*100).toFixed(1)}%`); setPred(`${p} ${(data[idx]*100).toFixed(1)}%`);
       input.dispose(); preds.dispose();
     }, 500);
-  } else {
-    clearInterval(rtInterval);
-    setPred('—');
-  }
+  } else { clearInterval(rtInterval); setPred('—'); }
 });
 
-/* ------------------ Save / Load model ------------------ */
-saveBtn.addEventListener('click', async () => {
-  if (!model) { setLog('No hay modelo para guardar.'); return; }
-  try { await model.save('indexeddb://lsc-landmarks-model'); setLog('Modelo guardado en IndexedDB.'); }
-  catch(e) { setLog('Error guardando: ' + e); }
-});
+/* ===== Save / load model ===== */
+saveBtn.addEventListener('click', async ()=> { touchConfirm('Guardar'); if(!model){ setLog('No hay modelo para guardar.'); return; } try{ await model.save('indexeddb://lsc-landmarks-model'); setLog('Modelo guardado en IndexedDB.'); }catch(e){ setLog('Error guardando: '+e); } });
+loadBtn.addEventListener('click', async ()=> { touchConfirm('Cargar'); try{ model = await tf.loadLayersModel('indexeddb://lsc-landmarks-model'); setLog('Modelo cargado desde IndexedDB.'); setStatus('Modelo cargado'); }catch(e){ setLog('No se encontró modelo guardado.'); } });
 
-loadBtn.addEventListener('click', async () => {
-  try { model = await tf.loadLayersModel('indexeddb://lsc-landmarks-model'); setLog('Modelo cargado desde IndexedDB.'); setStatus('Modelo cargado'); }
-  catch(e) { setLog('No se encontró modelo guardado.'); }
-});
+/* TTS */
+function speak(text){ if (!('speechSynthesis' in window)) return; const u=new SpeechSynthesisUtterance(text); u.lang='es-ES'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }
 
-/* ------------------ TTS ------------------ */
-function speak(text){
-  if (!('speechSynthesis' in window)) return;
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'es-ES';
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
-}
+/* tutorial handlers (Comenzar activa cámara) */
+btnComenzar.addEventListener('click', async ()=> { touchConfirm('Comenzar'); tutorialModal.style.display='none'; await startCamera(); });
+btnCerrar.addEventListener('click', async ()=> { touchConfirm('Cerrar tutorial'); tutorialModal.style.display='none'; await startCamera(); });
 
-/* ------------------ Tutorial modal handlers ------------------ */
-btnComenzar.addEventListener('click', async () => {
-  tutorialModal.style.display = 'none';
-  await startCamera();
-});
-btnCerrar.addEventListener('click', async () => {
-  tutorialModal.style.display = 'none';
-  await startCamera();
-});
+/* helpers & cleanup */
+window.addEventListener('beforeunload', ()=> { if (rtInterval) clearInterval(rtInterval); });
 
-/* ------------------ helpers & cleanup ------------------ */
-window.addEventListener('beforeunload', () => { if (rtInterval) clearInterval(rtInterval); });
-
-/* expose lastVector for predict code */
+/* expose lastVector var used in predict/training */
 let lastVector = null;
+/* onHandsResults updates lastVector already above via callback onHandsResults function */
 
-/* onHandsResults already sets lastVector inside its implementation */
 </script>
 </body>
-</html>
+        </html>
